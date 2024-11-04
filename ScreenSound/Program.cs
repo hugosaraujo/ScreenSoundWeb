@@ -1,5 +1,25 @@
-﻿using ScreenSound.Menus;
+﻿using ScreenSound.Banco;
+using ScreenSound.Menus;
 using ScreenSound.Modelos;
+
+try
+{
+    var artistaDal = new ArtistaDal();
+    
+    artistaDal.Adicionar(new Artista("Nile Rogers & CHIC", "O mestre do groove: Nile Rodgers e seu projeto Chic são sinônimo de disco music e hits que nunca saem de moda."));
+    
+    var listaArtistas = artistaDal.Listar();
+
+    foreach (var artista in listaArtistas)
+    {
+        Console.WriteLine(artista);
+    }
+
+} catch (Exception ex)
+{
+    Console.WriteLine(ex.Message);
+}
+return; 
 
 Artista ira = new Artista("Ira!", "Banda Ira!");
 Artista beatles = new("The Beatles", "Banda The Beatles");
