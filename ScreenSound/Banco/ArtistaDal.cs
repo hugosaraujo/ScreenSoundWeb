@@ -47,4 +47,34 @@ internal class ArtistaDal
         int retorno = cmd.ExecuteNonQuery();
         Console.WriteLine($"Linhas afetadas: {retorno}");
     }
+    
+    public void Atualizar(Artista artista)
+    {
+        var conn = new Connection().ObterConexao();
+        conn.Open();
+
+        string sql = $"UPDATE Artistas SET Nome = @nome, Bio = @bio WHERE Id = @id";
+        SqlCommand cmd = new SqlCommand(sql, conn);
+
+        cmd.Parameters.AddWithValue("@nome", artista.Nome);
+        cmd.Parameters.AddWithValue("@bio", artista.Bio);
+        cmd.Parameters.AddWithValue("@id", artista.Id);
+        
+        int retorno = cmd.ExecuteNonQuery();
+        Console.WriteLine($"Linhas afetadas: {retorno}");
+    }
+    
+    public void Deletar(Artista artista)
+    {
+        var conn = new Connection().ObterConexao();
+        conn.Open();
+
+        string sql = $"DELETE FROM Artistas WHERE Id = @id";
+        SqlCommand cmd = new SqlCommand(sql, conn);
+
+        cmd.Parameters.AddWithValue("@id", artista.Id);
+        
+        int retorno = cmd.ExecuteNonQuery();
+        Console.WriteLine($"Linhas afetadas: {retorno}");
+    }
 }

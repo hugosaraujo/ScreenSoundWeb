@@ -6,8 +6,8 @@ try
 {
     var artistaDal = new ArtistaDal();
     
-    artistaDal.Adicionar(new Artista("Nile Rogers & CHIC", "O mestre do groove: Nile Rodgers e seu projeto Chic são sinônimo de disco music e hits que nunca saem de moda."));
-    
+    //artistaDal.Adicionar(new Artista("Nile Rogers & CHIC", "O mestre do groove: Nile Rodgers e seu projeto Chic são sinônimo de disco music e hits que nunca saem de moda."));
+    artistaDal.Atualizar(new("Nile Rodgers", "O mestre do groove: Nile Rodgers e seu projeto Chic são sinônimo de disco music e hits que nunca saem de moda."){Id = 2});
     var listaArtistas = artistaDal.Listar();
 
     foreach (var artista in listaArtistas)
