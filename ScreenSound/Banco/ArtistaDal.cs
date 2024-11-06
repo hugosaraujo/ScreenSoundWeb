@@ -10,71 +10,38 @@ namespace ScreenSound.Banco;
 
 internal class ArtistaDal
 {
-    public IEnumerable<Artista> Listar()
+    private ScreenSoundContext _context;
+
+    public ArtistaDal(ScreenSoundContext context)
     {
-        List<Artista> lista = new();
-
-        using var conn = new Connection().ObterConexao() ;
-        conn.Open();
-
-        string sql = "SELECT * FROM Artistas";
-        SqlCommand cmd = new SqlCommand(sql, conn);
-        using SqlDataReader dataReader = cmd.ExecuteReader();
-
-        while (dataReader.Read())
-        {
-            int idArtista = Convert.ToInt32(dataReader["ID"]);
-            string nomeArtista = Convert.ToString(dataReader["Nome"]);
-            string bioArtista = Convert.ToString(dataReader["Bio"]);
-            Artista artista = new(nomeArtista, bioArtista) { Id = idArtista };
-            lista.Add(artista);
-        }
-        return lista;
+        _context = context;
     }
-    
+
+    public IEnumerable<Artista> Listar() 
+    {
+        return _context.Artistas.ToList();
+    }
+
+    public Artista? RecuperaPeloNome(string nome)
+    {
+        return _context.Artistas.FirstOrDefault(a =>  a.Nome.Equals(nome));
+    }
+
     public void Adicionar(Artista artista)
     {
-        var conn = new Connection().ObterConexao();
-        conn.Open();
-
-        string sql = "INSERT INTO Artistas (Nome, FotoPerfil, Bio) VALUES (@nome, @perfilPadrao, @bio)";
-        SqlCommand cmd = new SqlCommand(sql, conn);
-
-        cmd.Parameters.AddWithValue("@nome", artista.Nome);
-        cmd.Parameters.AddWithValue("@perfilPadrao", artista.FotoPerfil);
-        cmd.Parameters.AddWithValue("@bio", artista.Bio);
-
-        int retorno = cmd.ExecuteNonQuery();
-        Console.WriteLine($"Linhas afetadas: {retorno}");
+        _context.Artistas.Add(artista);
+        _context.SaveChanges();
     }
-    
+
     public void Atualizar(Artista artista)
     {
-        var conn = new Connection().ObterConexao();
-        conn.Open();
-
-        string sql = $"UPDATE Artistas SET Nome = @nome, Bio = @bio WHERE Id = @id";
-        SqlCommand cmd = new SqlCommand(sql, conn);
-
-        cmd.Parameters.AddWithValue("@nome", artista.Nome);
-        cmd.Parameters.AddWithValue("@bio", artista.Bio);
-        cmd.Parameters.AddWithValue("@id", artista.Id);
-        
-        int retorno = cmd.ExecuteNonQuery();
-        Console.WriteLine($"Linhas afetadas: {retorno}");
+        _context.Artistas.Update(artista);
+        _context.SaveChanges();
     }
-    
+
     public void Deletar(Artista artista)
     {
-        var conn = new Connection().ObterConexao();
-        conn.Open();
-
-        string sql = $"DELETE FROM Artistas WHERE Id = @id";
-        SqlCommand cmd = new SqlCommand(sql, conn);
-
-        cmd.Parameters.AddWithValue("@id", artista.Id);
-        
-        int retorno = cmd.ExecuteNonQuery();
-        Console.WriteLine($"Linhas afetadas: {retorno}");
+        _context.Artistas.Remove(artista);
+        _context.SaveChanges();
     }
 }
