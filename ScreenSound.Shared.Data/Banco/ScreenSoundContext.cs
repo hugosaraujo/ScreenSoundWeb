@@ -10,9 +10,9 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace ScreenSound.Banco;
 
-internal class ScreenSoundContext : DbContext
+public class ScreenSoundContext : DbContext
 {
-    private string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog = ScreenSound; Integrated Security = True; Encrypt=False;Trust Server Certificate=False;Application Intent = ReadWrite; Multi Subnet Failover=False";
+    private string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog = ScreenSound; Integrated Security = True; Encrypt=False;Trust Server Certificate=False;Application Intent = ReadWrite; Multi Subnet Failover=False;MultipleActiveResultSets=true";
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
