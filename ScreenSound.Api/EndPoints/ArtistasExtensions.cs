@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ScreenSound.Api.Requests;
+using ScreenSound.Api.Response;
 using ScreenSound.Banco;
 using ScreenSound.Modelos;
 
@@ -17,21 +18,21 @@ public static class ArtistasExtensions
             return dal.RecuperaPor(a => a.Nome.ToUpper().Equals(nome.ToUpper()));
         });
 
-        app.MapPost("/Artistas", ([FromServices] Dal<Artista> dal, [FromBody] ArtistaRequest artistarequest) =>
+        app.MapPost("/Artistas", ([FromServices] Dal<Artista> dal, [FromBody] ArtistaRequest artistaRequest) =>
         {
-            Artista artista = new(artistarequest.nome, artistarequest.bio);
+            Artista artista = new(artistaRequest.Nome, artistaRequest.Bio);
 
             dal.Adicionar(artista);
             return Results.Ok();
         });
 
-        app.MapPut("/Artistas", ([FromServices] Dal<Artista> dal, [FromBody] Artista artista) =>
+        app.MapPut("/Artistas", ([FromServices] Dal<Artista> dal, [FromBody] ArtistaRequestEdit artistaRequestEdit) =>
         {
-            var artistaParaAtualizar = dal.RecuperaPor(a => a.Id == artista.Id);
+            var artistaParaAtualizar = dal.RecuperaPor(a => a.Id == artistaRequestEdit.Id);
             if (artistaParaAtualizar is null) return Results.NotFound();
 
-            artistaParaAtualizar.Nome = artista.Nome;
-            artistaParaAtualizar.Bio = artista.Bio;
+            artistaParaAtualizar.Nome = artistaRequestEdit.Nome;
+            artistaParaAtualizar.Bio = artistaRequestEdit.Bio;
 
             dal.Atualizar(artistaParaAtualizar);
             return Results.Ok();
@@ -46,4 +47,15 @@ public static class ArtistasExtensions
             return Results.NoContent();
         });
     }
+
+    private static ICollection<ArtistaResponse> EntityListToResponseList(IEnumerable<Artista> listaDeArtistas)
+    {
+        return listaDeArtistas.Select(a => EntityToResponse(a)).ToList();
+    }
+
+    private static ArtistaResponse EntityToResponse(Artista artista)
+    {
+        return new ArtistaResponse(artista.Id, artista.Nome, artista.Bio, artista.FotoPerfil);
+    }
+
 }

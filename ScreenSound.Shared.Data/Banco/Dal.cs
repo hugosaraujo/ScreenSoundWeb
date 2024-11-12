@@ -12,7 +12,7 @@ public class Dal<T> where T : class
     }
     public IEnumerable<T> Listar()
     {
-        return _context.Set<T>().ToList();
+        return _context.Set<T>();
     }
     public void Adicionar(T objeto)
     {

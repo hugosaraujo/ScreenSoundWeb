@@ -17,5 +17,10 @@
 		<ProjectReference Include="..\ScreenSound.Shared.Data\ScreenSound.Shared.Data.csproj" />
 		<ProjectReference Include="..\ScreenSound.Shared.Modelos\ScreenSound.Shared.Modelos.csproj" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <Compile Remove="Response\ArtistasResponse.cs" />
+	  <Compile Remove="Response\MusicasResponse.cs" />
+	</ItemGroup>
 
 </Project>
