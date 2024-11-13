@@ -10,11 +10,19 @@ public static class MusicasExtensions
 {
     public static void AddEndPointMusicas(this WebApplication app)
     {
-        app.MapGet("/Musicas", ([FromServices] Dal<Musica> dal) => dal.Listar());
+        app.MapGet("/Musicas", ([FromServices] Dal<Musica> dal) =>
+        {
+            var listaDeMusicas = dal.Listar();
+            var listaDeMusicasResponse = EntityListToResponseList(listaDeMusicas);
+            return Results.Ok(listaDeMusicasResponse);
+        });
 
         app.MapGet("/Musicas/{nome}", ([FromServices] Dal<Musica> dal, string nome) =>
         {
-            return dal.RecuperaPor(m => m.Nome.ToUpper().Equals(nome.ToUpper()));
+            var musica = dal.RecuperaPor(m => m.Nome.ToUpper().Equals(nome.ToUpper()));
+            if (musica is null ) return Results.NotFound();
+            
+            return Results.Ok(EntityToResponse(musica));
         });
 
         app.MapPost("/Musicas", ([FromServices] Dal<Musica> dal, [FromBody] MusicaRequest musicaRequest) =>
@@ -53,10 +61,11 @@ public static class MusicasExtensions
     {
         return musicaList.Select(a => EntityToResponse(a)).ToList();
     }
-
     private static MusicaResponse EntityToResponse(Musica musica)
     {
-        return new MusicaResponse(musica.Id, musica.Nome!, musica.Artista!.Id, musica.Artista.Nome);
+        int artistaId = musica.Artista?.Id ?? 0;
+        string nomeArtista = musica.Artista?.Nome ?? string.Empty;
+        
+        return new MusicaResponse(musica.Id, musica.Nome, artistaId, nomeArtista);
     }
-
 }

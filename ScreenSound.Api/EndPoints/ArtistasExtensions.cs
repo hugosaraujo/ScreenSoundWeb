@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using ScreenSound.Api.Requests;
 using ScreenSound.Api.Response;
 using ScreenSound.Banco;
@@ -11,11 +12,19 @@ public static class ArtistasExtensions
     public static void AddEndPointsArtistas(this WebApplication app)
     {
 
-        app.MapGet("/Artistas", ([FromServices] Dal<Artista> dal) => dal.Listar());
+        app.MapGet("/Artistas", ([FromServices] Dal<Artista> dal) =>
+        {
+            var listaDeArtistas = dal.Listar();
+            var listaDeArtistasResponse = EntityListToResponseList(listaDeArtistas);
+            return Results.Ok(listaDeArtistasResponse);
+        });
 
         app.MapGet("/Artistas/{nome}", ([FromServices] Dal<Artista> dal, string nome) =>
         {
-            return dal.RecuperaPor(a => a.Nome.ToUpper().Equals(nome.ToUpper()));
+            var artista = dal.RecuperaPor(a => a.Nome.ToUpper().Equals(nome.ToUpper()));
+            if (artista is null) return Results.NotFound(); 
+            
+            return Results.Ok(EntityToResponse(artista));
         });
 
         app.MapPost("/Artistas", ([FromServices] Dal<Artista> dal, [FromBody] ArtistaRequest artistaRequest) =>
