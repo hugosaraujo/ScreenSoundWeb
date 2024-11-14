@@ -3,6 +3,7 @@ using ScreenSound.Modelos;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using ScreenSound.Api.EndPoints;
+using ScreenSound.Shared.Data.Banco;
 
 var builder = WebApplication.CreateBuilder(args);
 

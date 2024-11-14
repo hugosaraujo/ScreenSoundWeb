@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Formats.Tar;
+using Microsoft.AspNetCore.Mvc;
 using ScreenSound.Api.Requests;
 using ScreenSound.Api.Response;
 using ScreenSound.Banco;
 using ScreenSound.Modelos;
+using ScreenSound.Shared.Modelos.Modelos;
 
 namespace ScreenSound.Api.EndPoints;
 
@@ -30,7 +32,8 @@ public static class MusicasExtensions
             Musica musica = new Musica(musicaRequest.Nome)
             {
                 ArtistaId = musicaRequest.ArtistaId,
-                AnoLancamento = musicaRequest.AnoLancamento
+                AnoLancamento = musicaRequest.AnoLancamento,
+                Generos = musicaRequest.Generos is not null? GeneroRequestConverter(musicaRequest.Generos) : new List<Genero>(),
             };
             dal.Adicionar(musica);
             return Results.Ok();
@@ -57,6 +60,17 @@ public static class MusicasExtensions
             return Results.NoContent();
         });
     }
+
+    private static ICollection<Genero> GeneroRequestConverter(ICollection<GeneroRequest> generos)
+    {
+        return generos.Select(a => RequestToEntity(a)).ToList();
+    }
+
+    private static Genero RequestToEntity(GeneroRequest genero)
+    {
+        return new Genero() {Nome = genero.Nome, Descricao = genero.Descricao};
+    }
+
     private static ICollection<MusicaResponse> EntityListToResponseList(IEnumerable<Musica> musicaList)
     {
         return musicaList.Select(a => EntityToResponse(a)).ToList();

@@ -1,4 +1,5 @@
 ﻿using ScreenSound.Modelos;
+using ScreenSound.Shared.Data.Banco;
 
 namespace ScreenSound.Banco;
 
